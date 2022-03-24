@@ -1,0 +1,16 @@
+서버 계속 돌려놓기
+
+nohup ~ &
+
+ex) nohup python app.py &
+
+
+계속 돌려놓은 서버 끄기
+
+1) ps -ef | grep '~'
+2) kill -9 ~
+3) kill -9 ~
+
+ex) ps -ef | grep 'app.py'
+     kill -9 20497
+     kill -9 20507

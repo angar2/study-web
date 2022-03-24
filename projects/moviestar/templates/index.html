@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>마이 페이보릿 무비스타 | 프론트-백엔드 연결 마지막 예제!</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"/>
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <style>
+            .center {
+                text-align: center;
+            }
+
+            .star-list {
+                width: 500px;
+                margin: 20px auto 0 auto;
+            }
+
+            .star-name {
+                display: inline-block;
+            }
+
+            .star-name:hover {
+                text-decoration: underline;
+            }
+
+            .card {
+                margin-bottom: 15px;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                showStar();
+            });
+
+            function showStar() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/list?sample_give=샘플데이터',
+                    data: {},
+                    success: function (response) {
+                        let mystars = response['movie_stars']
+                        for (let i = 0; i < mystars.length; i++) {
+                            let name = mystars[i]['name']
+                            let img_url = mystars[i]['img_url']
+                            let recent = mystars[i]['recent']
+                            let url = mystars[i]['url']
+                            let like = mystars[i]['like']
+
+                            let temp_html =`<div class="card">
+                                                <div class="card-content">
+                                                    <div class="media">
+                                                        <div class="media-left">
+                                                            <figure class="image is-48x48">
+                                                                <img
+                                                                        src="${img_url}"
+                                                                        alt="Placeholder image"
+                                                                />
+                                                            </figure>
+                                                        </div>
+                                                        <div class="media-content">
+                                                            <a href="${url}" target="_blank" class="star-name title is-4">${name} (좋아요: ${like})</a>
+                                                            <p class="subtitle is-6">${recent}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <footer class="card-footer">
+                                                    <a href="#" onclick="likeStar('${name}')" class="card-footer-item has-text-info">
+                                                        위로!
+                                                        <span class="icon">
+                                              <i class="fas fa-thumbs-up"></i>
+                                            </span>
+                                                    </a>
+                                                    <a href="#" onclick="deleteStar('${name}')" class="card-footer-item has-text-danger">
+                                                        삭제
+                                                        <span class="icon">
+                                              <i class="fas fa-ban"></i>
+                                            </span>
+                                                    </a>
+                                                </footer>
+                                            </div>`
+                            $('#star-box').append(temp_html)
+                        }
+                    }
+                });
+            }
+
+            function likeStar(name) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/like',
+                    data: {name_give:name},
+                    success: function (response) {
+                        alert(response['msg']);
+                        window.location.reload()
+                    }
+                });
+            }
+
+            function deleteStar(name) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/delete',
+                    data: {name_give:name},
+                    success: function (response) {
+                        alert(response['msg']);
+                        window.location.reload()
+                    }
+                });
+            }
+
+        </script>
+    </head>
+    <body>
+        <section class="hero is-warning">
+            <div class="hero-body">
+                <div class="container center">
+                    <h1 class="title">
+                        마이 페이보릿 무비스타😆
+                    </h1>
+                    <h2 class="subtitle">
+                        순위를 매겨봅시다
+                    </h2>
+                </div>
+            </div>
+        </section>
+        <div class="star-list" id="star-box">
+        </div>
+    </body>
+</html>
